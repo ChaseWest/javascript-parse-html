@@ -1,21 +1,28 @@
 ;(function(window, document, undefined){
 
   function parseHTML(htmlString){
-      var frag = document.createDocumentFragment();
+      var frag = document.createDocumentFragment(),
+          el,
+          parser;
 
-      if(!!DOMParser){
+      if(!htmlString || typeof htmlString !== "string"){
+          return "";
+      }
 
-        var parser = new DOMParser();
-        return frag.appendChild(parser.parseFromString(htmlString, "text/html").querySelector("body").children[0]);
+      else if(!!DOMParser){
+
+        parser = new DOMParser();
+        el = parser.parseFromString(htmlString, "text/html").querySelector("body");
+
+        return !!frag.appendChild(el).children[0] ? frag.appendChild(el).children[0] : "";
 
       } else {
 
-        var el = document.createElement( "div" );
-            el.setAttribute("id", "wrapper");
-            el.innerHTML = htmlString;
+        el = document.createElement( "div" );
+        el.setAttribute("id", "wrapper");
+        el.innerHTML = htmlString;
 
-        frag.appendChild(el);
-        return frag.querySelector("div#wrapper").children[0];
+       return !!frag.appendChild(el).querySelector("div#wrapper") ?  frag.appendChild(el).querySelector("div#wrapper").children[0] : "";
 
       }
 
